@@ -10,6 +10,10 @@ app=Flask(__name__)
 def homepage():
     return render_template('index.html')
 
+@app.route('/health',methods=['GET'])
+def health_check():
+    return {"status": "healthy", "service": "wine-quality-prediction"}, 200
+
 @app.route('/train',methods=['GET'])
 def training():
     os.system("python main.py")

@@ -10,6 +10,13 @@ This guide explains how to containerize and deploy your data science project usi
 - Git repository set up
 
 ### 1. Set up DagsHub Token
+
+**Windows (Easy Setup):**
+```batch
+setup-env.bat
+```
+
+**Manual Setup:**
 ```bash
 # Linux/Mac
 export DAGSHUB_TOKEN=your_dagshub_token_here
@@ -28,6 +35,11 @@ set DAGSHUB_TOKEN=your_dagshub_token_here
 **Windows:**
 ```batch
 run.bat run
+```
+
+**Alternative Windows Testing:**
+```batch
+test-docker-local.bat
 ```
 
 The application will be available at: http://localhost:8080
@@ -94,6 +106,7 @@ docker-compose down
 ## 🌐 Application Endpoints
 
 - **Home Page**: http://localhost:8080/
+- **Health Check**: http://localhost:8080/health (GET)
 - **Prediction**: http://localhost:8080/predict (POST)
 - **Training**: http://localhost:8080/train (GET)
 
@@ -239,10 +252,11 @@ docker logs --details datascienceproject-container
 
 ### Health Checks
 The container includes automatic health checks:
-- **Endpoint**: http://localhost:8080/
+- **Endpoint**: http://localhost:8080/health
 - **Interval**: 30 seconds
 - **Timeout**: 3 seconds
 - **Retries**: 3
+- **Start Period**: 10 seconds
 
 ### Logs
 ```bash
