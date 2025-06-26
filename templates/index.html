@@ -1,117 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-      
-    </head>
-    <body>
-       
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Quality Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
 
-        <!-- Main Content-->
-        <div class="container px-4 px-lg-5">
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
 
-           <!DOCTYPE html>
-<html>
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
 
-<body class="form-v9">
-	<div class="page-content">
-		<div class="form-v9-content" style="background-image: url('static/assets/img/form-v9.jpg')">
-			<form class="form-detail" action="/predict" method="post">
-				<h2>Please Fill The Information</h2>
-				<div class="form-row-total">
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
 
-					<div class="form-row">
-                        <label for="fixed_acidity"> Fixed Acidity:</label>
-						<input type="text" name="fixed_acidity" id="fixed_acidity" class="input-text" placeholder="fixed_acidity" required>
-					</div>
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
 
-					<div class="form-row">
-                        <label for="volatile_acidity"> Volatile Acidity:</label>
-						<input type="text" name="volatile_acidity" id="volatile_acidity" class="input-text" placeholder="volatile_acidity" required>
-					</div>
+        .form-container {
+            padding: 40px;
+        }
 
-				</div>
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
 
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
 
-				<div class="form-row-total">
+        .form-group label {
+            color: #2c3e50;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
 
-                    <div class="form-row">
-                        <label for="citric_acid"> Citric Acid:</label>
-						<input type="text" name="citric_acid" id="citric_acid" class="input-text" placeholder="citric_acid" required>
-					</div>
+        .form-group input {
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
 
+        .form-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+        }
 
-                    <div class="form-row">
-                        <label for="residual_sugar"> Residual Sugar:</label>
-						<input type="text" name="residual_sugar" id="residual_sugar" class="input-text" placeholder="residual_sugar" required>
-					</div>
+        .form-group input:hover {
+            border-color: #bdc3c7;
+        }
 
-				</div>
+        .submit-container {
+            text-align: center;
+            margin-top: 40px;
+        }
 
+        .submit-btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 18px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-                <div class="form-row-total">
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.4);
+            background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+        }
 
-                    <div class="form-row">
-                        <label for="chlorides"> Chlorides:</label>
-						<input type="text" name="chlorides" id="chlorides" class="input-text" placeholder="chlorides" required>
-					</div>
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
 
-                    <div class="form-row">
-                        <label for="free_sulfur_dioxide"> Free Sulfur Dioxide:</label>
-						<input type="text" name="free_sulfur_dioxide" id="free_sulfur_dioxide" class="input-text" placeholder="free_sulfur_dioxide" required>
-					</div>
+        .info-section {
+            background: #f8f9fa;
+            padding: 30px;
+            margin-top: 20px;
+            border-radius: 15px;
+        }
 
-				</div>
+        .info-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
 
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
 
-                <div class="form-row-total">
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
 
-                    <div class="form-row">
-                        <label for="total_sulfur_dioxide"> Total Sulfur Dioxide:</label>
-						<input type="text" name="total_sulfur_dioxide" id="total_sulfur_dioxide" class="input-text" placeholder="total_sulfur_dioxide" required>
-					</div>
+        .info-item strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
 
-                    <div class="form-row">
-                        <label for="density"> Density:</label>
-						<input type="text" name="density" id="density" class="input-text" placeholder="density" required>
-					</div>
+        .info-item span {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
 
-				</div>
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
 
+            .header h1 {
+                font-size: 2rem;
+            }
 
-                <div class="form-row-total">
+            .header p {
+                font-size: 1rem;
+            }
 
-                    <div class="form-row">
-                        <label for="pH"> pH:</label>
-						<input type="text" name="pH" id="pH" class="input-text" placeholder="pH" required>
-					</div>
+            .form-container {
+                padding: 20px;
+            }
 
-                    <div class="form-row">
-                        <label for="sulphates"> Sulphates:</label>
-						<input type="text" name="sulphates" id="sulphates" class="input-text" placeholder="sulphates" required>
-					</div>
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
 
-				</div>
+            .submit-btn {
+                padding: 15px 40px;
+                font-size: 1rem;
+                width: 100%;
+                max-width: 300px;
+            }
 
+            .info-section {
+                padding: 20px;
+            }
 
-                <div class="form-row-total">
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
-                    <div class="form-row">
-                        <label for="alcohol"> Alcohol:</label>
-						<input type="text" name="alcohol" id="alcohol" class="input-text" placeholder="alcohol" required>
-					</div>
+        @media (max-width: 480px) {
+            .header {
+                padding: 30px 15px;
+            }
 
+            .header h1 {
+                font-size: 1.8rem;
+            }
 
-				</div>
+            .form-container {
+                padding: 15px;
+            }
 
+            .form-group input {
+                padding: 12px;
+            }
+        }
 
-				<div class="form-row-last">
-					<input type="submit" name="register" class="register" value="Predict">
-				</div>
-			</form>
-		</div>
-	</div>
-</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+        /* Loading animation */
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍷 Wine Quality Prediction</h1>
+            <p>Enter the wine characteristics to predict its quality score</p>
+        </div>
+
+        <div class="form-container">
+            <form id="predictionForm" action="/predict" method="post">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fixed_acidity">Fixed Acidity</label>
+                        <input type="number" step="0.01" name="fixed_acidity" id="fixed_acidity" 
+                               placeholder="e.g., 7.4" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="volatile_acidity">Volatile Acidity</label>
+                        <input type="number" step="0.001" name="volatile_acidity" id="volatile_acidity" 
+                               placeholder="e.g., 0.7" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="citric_acid">Citric Acid</label>
+                        <input type="number" step="0.01" name="citric_acid" id="citric_acid" 
+                               placeholder="e.g., 0.0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="residual_sugar">Residual Sugar</label>
+                        <input type="number" step="0.1" name="residual_sugar" id="residual_sugar" 
+                               placeholder="e.g., 1.9" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="chlorides">Chlorides</label>
+                        <input type="number" step="0.001" name="chlorides" id="chlorides" 
+                               placeholder="e.g., 0.076" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="free_sulfur_dioxide">Free Sulfur Dioxide</label>
+                        <input type="number" step="1" name="free_sulfur_dioxide" id="free_sulfur_dioxide" 
+                               placeholder="e.g., 11" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="total_sulfur_dioxide">Total Sulfur Dioxide</label>
+                        <input type="number" step="1" name="total_sulfur_dioxide" id="total_sulfur_dioxide" 
+                               placeholder="e.g., 34" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="density">Density</label>
+                        <input type="number" step="0.0001" name="density" id="density" 
+                               placeholder="e.g., 0.9978" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pH">pH Level</label>
+                        <input type="number" step="0.01" name="pH" id="pH" 
+                               placeholder="e.g., 3.51" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sulphates">Sulphates</label>
+                        <input type="number" step="0.01" name="sulphates" id="sulphates" 
+                               placeholder="e.g., 0.56" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="alcohol">Alcohol Content (%)</label>
+                        <input type="number" step="0.1" name="alcohol" id="alcohol" 
+                               placeholder="e.g., 9.4" required>
+                    </div>
+                </div>
+
+                <div class="submit-container">
+                    <button type="submit" class="submit-btn">Predict Wine Quality</button>
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Analyzing wine characteristics...</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="info-section">
+            <h3>📊 Wine Quality Parameters</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Fixed Acidity</strong>
+                    <span>Tartaric acid content (g/dm³)</span>
+                </div>
+                <div class="info-item">
+                    <strong>Volatile Acidity</strong>
+                    <span>Acetic acid content (g/dm³)</span>
+                </div>
+                <div class="info-item">
+                    <strong>Citric Acid</strong>
+                    <span>Freshness and flavor (g/dm³)</span>
+                </div>
+                <div class="info-item">
+                    <strong>Residual Sugar</strong>
+                    <span>Remaining sugar after fermentation (g/dm³)</span>
+                </div>
+                <div class="info-item">
+                    <strong>Chlorides</strong>
+                    <span>Salt content (g/dm³)</span>
+                </div>
+                <div class="info-item">
+                    <strong>Sulfur Dioxide</strong>
+                    <span>Preservative levels (mg/dm³)</span>
+                </div>
+                <div class="info-item">
+                    <strong>Density</strong>
+                    <span>Wine density (g/cm³)</span>
+                </div>
+                <div class="info-item">
+                    <strong>pH Level</strong>
+                    <span>Acidity/alkalinity scale</span>
+                </div>
+                <div class="info-item">
+                    <strong>Sulphates</strong>
+                    <span>Potassium sulphate (g/dm³)</span>
+                </div>
+                <div class="info-item">
+                    <strong>Alcohol</strong>
+                    <span>Alcohol content by volume (%)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', function() {
+            document.querySelector('.submit-btn').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+        });
+
+        // Add input validation and formatting
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value < 0) {
+                    this.value = 0;
+                }
+            });
+        });
+    </script>
+</body>
 </html>
 
         

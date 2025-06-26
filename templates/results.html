@@ -1,2 +1,433 @@
-<h1>Predictions: {{prediction}} </h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Quality Prediction Results</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .results-container {
+            padding: 40px;
+        }
+
+        .prediction-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(240, 147, 251, 0.3);
+        }
+
+        .prediction-score {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .prediction-label {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .quality-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .quality-scale {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .quality-scale h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+
+        .scale-bar {
+            height: 40px;
+            background: linear-gradient(to right, #e74c3c, #f39c12, #f1c40f, #2ecc71, #27ae60);
+            border-radius: 20px;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .scale-indicator {
+            position: absolute;
+            top: -10px;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 60px;
+            background: #2c3e50;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .quality-ranges {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .range-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+
+        .range-score {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .range-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(149, 165, 166, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(149, 165, 166, 0.4);
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .error-message h2 {
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .error-message p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .results-container {
+                padding: 20px;
+            }
+
+            .prediction-card {
+                padding: 30px 20px;
+            }
+
+            .prediction-score {
+                font-size: 3rem;
+            }
+
+            .prediction-label {
+                font-size: 1.3rem;
+            }
+
+            .quality-scale {
+                padding: 20px;
+            }
+
+            .actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 30px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .results-container {
+                padding: 15px;
+            }
+
+            .prediction-score {
+                font-size: 2.5rem;
+            }
+
+            .quality-ranges {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .prediction-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .quality-scale {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .actions {
+            animation: fadeInUp 1s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍷 Prediction Results</h1>
+            <p>Your wine quality analysis is complete</p>
+        </div>
+
+        <div class="results-container">
+            {% if prediction and prediction != 'Error' %}
+                <div class="prediction-card">
+                    <div class="prediction-score">{{ "%.1f"|format(prediction|float) }}</div>
+                    <div class="prediction-label">Quality Score</div>
+                    <div class="quality-description" id="qualityDescription">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="quality-scale">
+                    <h3>🎯 Wine Quality Scale</h3>
+                    <div class="scale-bar">
+                        <div class="scale-indicator" id="scaleIndicator"></div>
+                    </div>
+                    <div class="scale-labels">
+                        <span>Poor (3-4)</span>
+                        <span>Fair (5)</span>
+                        <span>Good (6)</span>
+                        <span>Very Good (7)</span>
+                        <span>Excellent (8-9)</span>
+                    </div>
+                    
+                    <div class="quality-ranges">
+                        <div class="range-item">
+                            <div class="range-score">3-4</div>
+                            <div class="range-label">Poor Quality</div>
+                        </div>
+                        <div class="range-item">
+                            <div class="range-score">5</div>
+                            <div class="range-label">Fair Quality</div>
+                        </div>
+                        <div class="range-item">
+                            <div class="range-score">6</div>
+                            <div class="range-label">Good Quality</div>
+                        </div>
+                        <div class="range-item">
+                            <div class="range-score">7</div>
+                            <div class="range-label">Very Good</div>
+                        </div>
+                        <div class="range-item">
+                            <div class="range-score">8-9</div>
+                            <div class="range-label">Excellent</div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="error-message">
+                    <h2>⚠️ Prediction Error</h2>
+                    <p>{{ prediction if prediction else 'An error occurred while processing your request. Please check your input values and try again.' }}</p>
+                </div>
+            {% endif %}
+
+            <div class="actions">
+                <a href="/" class="btn btn-primary">🔄 Make Another Prediction</a>
+                <a href="/train" class="btn btn-secondary">🎯 Retrain Model</a>
+            </div>
+        </div>
+    </div>
+
+    {% if prediction and prediction != 'Error' %}
+    <script>
+        // Set quality description and scale indicator position
+        const predictionValue = {{ prediction|float }};
+        
+        function setQualityInfo(score) {
+            const descriptionElement = document.getElementById('qualityDescription');
+            const indicatorElement = document.getElementById('scaleIndicator');
+            
+            let description = '';
+            let position = 0;
+            
+            if (score >= 8) {
+                description = 'Excellent wine with outstanding characteristics and perfect balance.';
+                position = 90;
+            } else if (score >= 7) {
+                description = 'Very good wine with great flavor profile and minimal flaws.';
+                position = 75;
+            } else if (score >= 6) {
+                description = 'Good quality wine with pleasant taste and acceptable characteristics.';
+                position = 60;
+            } else if (score >= 5) {
+                description = 'Fair quality wine with some noticeable flaws but still drinkable.';
+                position = 40;
+            } else {
+                description = 'Poor quality wine with significant flaws affecting taste and aroma.';
+                position = 20;
+            }
+            
+            if (descriptionElement) {
+                descriptionElement.textContent = description;
+            }
+            
+            if (indicatorElement) {
+                indicatorElement.style.left = position + '%';
+            }
+        }
+        
+        if (predictionValue > 0) {
+            setQualityInfo(predictionValue);
+        }
+        
+        // Add some interactive effects
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.05)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
 
