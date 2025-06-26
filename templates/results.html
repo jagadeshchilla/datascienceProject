@@ -316,13 +316,13 @@
 
         <div class="results-container">
             {% if prediction and prediction != 'Error' %}
-                <div class="prediction-card">
-                    <div class="prediction-score">{{ "%.1f"|format(prediction|float) }}</div>
-                    <div class="prediction-label">Quality Score</div>
-                    <div class="quality-description" id="qualityDescription">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
-                </div>
+                                 <div class="prediction-card">
+                     <div class="prediction-score" data-score="{{ prediction|float }}">{{ "%.1f"|format(prediction|float) }}</div>
+                     <div class="prediction-label">Quality Score</div>
+                     <div class="quality-description" id="qualityDescription">
+                         <!-- Will be populated by JavaScript -->
+                     </div>
+                 </div>
 
                 <div class="quality-scale">
                     <h3>🎯 Wine Quality Scale</h3>
@@ -374,11 +374,8 @@
         </div>
     </div>
 
-    {% if prediction and prediction != 'Error' %}
     <script>
         // Set quality description and scale indicator position
-        const predictionValue = {{ prediction|float }};
-        
         function setQualityInfo(score) {
             const descriptionElement = document.getElementById('qualityDescription');
             const indicatorElement = document.getElementById('scaleIndicator');
@@ -412,22 +409,28 @@
             }
         }
         
-        if (predictionValue > 0) {
-            setQualityInfo(predictionValue);
-        }
-        
-        // Add some interactive effects
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-3px) scale(1.05)';
-            });
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const scoreElement = document.querySelector('.prediction-score');
+            if (scoreElement && scoreElement.dataset.score) {
+                const predictionValue = parseFloat(scoreElement.dataset.score);
+                if (predictionValue > 0) {
+                    setQualityInfo(predictionValue);
+                }
+            }
             
-            btn.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
+            // Add interactive effects
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px) scale(1.05)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
             });
         });
     </script>
-    {% endif %}
 </body>
 </html>
 
