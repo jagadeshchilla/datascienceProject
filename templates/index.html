@@ -1,392 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Wine Quality Prediction using Machine Learning - Predict wine quality based on chemical properties">
+    <meta name="keywords" content="wine quality, machine learning, prediction, data science">
     <title>Wine Quality Prediction</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        .form-container {
-            padding: 40px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            color: #2c3e50;
-            font-weight: 500;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-        }
-
-        .form-group input {
-            padding: 15px;
-            border: 2px solid #e1e8ed;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #3498db;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .form-group input:hover {
-            border-color: #bdc3c7;
-        }
-
-        .submit-container {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-            padding: 18px 50px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.4);
-            background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
-        }
-
-        .submit-btn:active {
-            transform: translateY(-1px);
-        }
-
-        .info-section {
-            background: #f8f9fa;
-            padding: 30px;
-            margin-top: 20px;
-            border-radius: 15px;
-        }
-
-        .info-section h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-        }
-
-        .info-item {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #3498db;
-        }
-
-        .info-item strong {
-            color: #2c3e50;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .info-item span {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .header p {
-                font-size: 1rem;
-            }
-
-            .form-container {
-                padding: 20px;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .submit-btn {
-                padding: 15px 40px;
-                font-size: 1rem;
-                width: 100%;
-                max-width: 300px;
-            }
-
-            .info-section {
-                padding: 20px;
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                padding: 30px 15px;
-            }
-
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .form-container {
-                padding: 15px;
-            }
-
-            .form-group input {
-                padding: 12px;
-            }
-        }
-
-        /* Loading animation */
-        .loading {
-            display: none;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
-    </head>
-    <body>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍷</text></svg>">
+</head>
+<body>
     <div class="container">
-        <div class="header">
+        <!-- Header Section -->
+        <header class="header">
             <h1>🍷 Wine Quality Prediction</h1>
-            <p>Enter the wine characteristics to predict its quality score</p>
-					</div>
+            <p>Predict wine quality using advanced machine learning algorithms</p>
+            <p>Enter the chemical properties of your wine to get an accurate quality score</p>
+        </header>
 
-        <div class="form-container">
-            <form id="predictionForm" action="/predict" method="post">
+        <!-- Main Form Container -->
+        <main class="form-container">
+            <h2 class="form-title">Wine Chemical Properties</h2>
+            
+            <form action="/predict" method="post" id="predictionForm">
+                <!-- Form Grid for Responsive Layout -->
                 <div class="form-grid">
+                    
                     <div class="form-group">
-                        <label for="fixed_acidity">Fixed Acidity</label>
-                        <input type="number" step="0.01" name="fixed_acidity" id="fixed_acidity" 
-                               placeholder="e.g., 7.4" required>
-					</div>
+                        <label for="fixed_acidity">Fixed Acidity (g/L)</label>
+                        <input type="number" 
+                               name="fixed_acidity" 
+                               id="fixed_acidity" 
+                               step="0.01" 
+                               min="0" 
+                               max="20"
+                               placeholder="e.g., 7.4"
+                               required
+                               aria-describedby="fixed_acidity_help">
+                        <small id="fixed_acidity_help" class="help-text">Tartaric acid concentration (typical range: 4.6-15.9)</small>
+                    </div>
 
                     <div class="form-group">
-                        <label for="volatile_acidity">Volatile Acidity</label>
-                        <input type="number" step="0.001" name="volatile_acidity" id="volatile_acidity" 
-                               placeholder="e.g., 0.7" required>
-				</div>
+                        <label for="volatile_acidity">Volatile Acidity (g/L)</label>
+                        <input type="number" 
+                               name="volatile_acidity" 
+                               id="volatile_acidity" 
+                               step="0.01" 
+                               min="0" 
+                               max="2"
+                               placeholder="e.g., 0.7"
+                               required
+                               aria-describedby="volatile_acidity_help">
+                        <small id="volatile_acidity_help" class="help-text">Acetic acid concentration (typical range: 0.12-1.58)</small>
+                    </div>
 
                     <div class="form-group">
-                        <label for="citric_acid">Citric Acid</label>
-                        <input type="number" step="0.01" name="citric_acid" id="citric_acid" 
-                               placeholder="e.g., 0.0" required>
-					</div>
+                        <label for="citric_acid">Citric Acid (g/L)</label>
+                        <input type="number" 
+                               name="citric_acid" 
+                               id="citric_acid" 
+                               step="0.01" 
+                               min="0" 
+                               max="1"
+                               placeholder="e.g., 0.0"
+                               required
+                               aria-describedby="citric_acid_help">
+                        <small id="citric_acid_help" class="help-text">Adds freshness and flavor (typical range: 0-1)</small>
+                    </div>
 
                     <div class="form-group">
-                        <label for="residual_sugar">Residual Sugar</label>
-                        <input type="number" step="0.1" name="residual_sugar" id="residual_sugar" 
-                               placeholder="e.g., 1.9" required>
-					</div>
+                        <label for="residual_sugar">Residual Sugar (g/L)</label>
+                        <input type="number" 
+                               name="residual_sugar" 
+                               id="residual_sugar" 
+                               step="0.1" 
+                               min="0" 
+                               max="20"
+                               placeholder="e.g., 1.9"
+                               required
+                               aria-describedby="residual_sugar_help">
+                        <small id="residual_sugar_help" class="help-text">Sugar remaining after fermentation (typical range: 0.9-15.5)</small>
+                    </div>
 
                     <div class="form-group">
-                        <label for="chlorides">Chlorides</label>
-                        <input type="number" step="0.001" name="chlorides" id="chlorides" 
-                               placeholder="e.g., 0.076" required>
-				</div>
+                        <label for="chlorides">Chlorides (g/L)</label>
+                        <input type="number" 
+                               name="chlorides" 
+                               id="chlorides" 
+                               step="0.001" 
+                               min="0" 
+                               max="1"
+                               placeholder="e.g., 0.076"
+                               required
+                               aria-describedby="chlorides_help">
+                        <small id="chlorides_help" class="help-text">Salt content in wine (typical range: 0.01-0.61)</small>
+                    </div>
 
                     <div class="form-group">
-                        <label for="free_sulfur_dioxide">Free Sulfur Dioxide</label>
-                        <input type="number" step="1" name="free_sulfur_dioxide" id="free_sulfur_dioxide" 
-                               placeholder="e.g., 11" required>
-					</div>
+                        <label for="free_sulfur_dioxide">Free Sulfur Dioxide (mg/L)</label>
+                        <input type="number" 
+                               name="free_sulfur_dioxide" 
+                               id="free_sulfur_dioxide" 
+                               step="1" 
+                               min="0" 
+                               max="100"
+                               placeholder="e.g., 11"
+                               required
+                               aria-describedby="free_sulfur_dioxide_help">
+                        <small id="free_sulfur_dioxide_help" class="help-text">Free form of SO2 (typical range: 1-72)</small>
+                    </div>
 
                     <div class="form-group">
-                        <label for="total_sulfur_dioxide">Total Sulfur Dioxide</label>
-                        <input type="number" step="1" name="total_sulfur_dioxide" id="total_sulfur_dioxide" 
-                               placeholder="e.g., 34" required>
-					</div>
+                        <label for="total_sulfur_dioxide">Total Sulfur Dioxide (mg/L)</label>
+                        <input type="number" 
+                               name="total_sulfur_dioxide" 
+                               id="total_sulfur_dioxide" 
+                               step="1" 
+                               min="0" 
+                               max="300"
+                               placeholder="e.g., 34"
+                               required
+                               aria-describedby="total_sulfur_dioxide_help">
+                        <small id="total_sulfur_dioxide_help" class="help-text">Total SO2 content (typical range: 6-289)</small>
+                    </div>
 
                     <div class="form-group">
-                        <label for="density">Density</label>
-                        <input type="number" step="0.0001" name="density" id="density" 
-                               placeholder="e.g., 0.9978" required>
-				</div>
+                        <label for="density">Density (g/cm³)</label>
+                        <input type="number" 
+                               name="density" 
+                               id="density" 
+                               step="0.0001" 
+                               min="0.9" 
+                               max="1.1"
+                               placeholder="e.g., 0.9978"
+                               required
+                               aria-describedby="density_help">
+                        <small id="density_help" class="help-text">Wine density (typical range: 0.99-1.00)</small>
+                    </div>
 
                     <div class="form-group">
                         <label for="pH">pH Level</label>
-                        <input type="number" step="0.01" name="pH" id="pH" 
-                               placeholder="e.g., 3.51" required>
-					</div>
+                        <input type="number" 
+                               name="pH" 
+                               id="pH" 
+                               step="0.01" 
+                               min="2" 
+                               max="5"
+                               placeholder="e.g., 3.51"
+                               required
+                               aria-describedby="pH_help">
+                        <small id="pH_help" class="help-text">Acidity/alkalinity scale (typical range: 2.74-4.01)</small>
+                    </div>
 
                     <div class="form-group">
-                        <label for="sulphates">Sulphates</label>
-                        <input type="number" step="0.01" name="sulphates" id="sulphates" 
-                               placeholder="e.g., 0.56" required>
-					</div>
+                        <label for="sulphates">Sulphates (g/L)</label>
+                        <input type="number" 
+                               name="sulphates" 
+                               id="sulphates" 
+                               step="0.01" 
+                               min="0" 
+                               max="2"
+                               placeholder="e.g., 0.56"
+                               required
+                               aria-describedby="sulphates_help">
+                        <small id="sulphates_help" class="help-text">Wine additive (typical range: 0.33-2.0)</small>
+                    </div>
 
                     <div class="form-group">
                         <label for="alcohol">Alcohol Content (%)</label>
-                        <input type="number" step="0.1" name="alcohol" id="alcohol" 
-                               placeholder="e.g., 9.4" required>
+                        <input type="number" 
+                               name="alcohol" 
+                               id="alcohol" 
+                               step="0.1" 
+                               min="0" 
+                               max="20"
+                               placeholder="e.g., 9.4"
+                               required
+                               aria-describedby="alcohol_help">
+                        <small id="alcohol_help" class="help-text">Alcohol percentage by volume (typical range: 8.4-14.9)</small>
                     </div>
-				</div>
 
+                </div>
+
+                <!-- Submit Button -->
                 <div class="submit-container">
-                    <button type="submit" class="submit-btn">Predict Wine Quality</button>
-                    <div class="loading" id="loading">
-                        <div class="spinner"></div>
-                        <p>Analyzing wine characteristics...</p>
-                    </div>
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span id="buttonText">Predict Quality</span>
+                    </button>
+                </div>
+
+                <!-- Loading Animation -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing wine properties...</p>
                 </div>
             </form>
-					</div>
+        </main>
+    </div>
 
-        <div class="info-section">
-            <h3>📊 Wine Quality Parameters</h3>
-            <div class="info-grid">
-                <div class="info-item">
-                    <strong>Fixed Acidity</strong>
-                    <span>Tartaric acid content (g/dm³)</span>
-                </div>
-                <div class="info-item">
-                    <strong>Volatile Acidity</strong>
-                    <span>Acetic acid content (g/dm³)</span>
-                </div>
-                <div class="info-item">
-                    <strong>Citric Acid</strong>
-                    <span>Freshness and flavor (g/dm³)</span>
-                </div>
-                <div class="info-item">
-                    <strong>Residual Sugar</strong>
-                    <span>Remaining sugar after fermentation (g/dm³)</span>
-                </div>
-                <div class="info-item">
-                    <strong>Chlorides</strong>
-                    <span>Salt content (g/dm³)</span>
-                </div>
-                <div class="info-item">
-                    <strong>Sulfur Dioxide</strong>
-                    <span>Preservative levels (mg/dm³)</span>
-                </div>
-                <div class="info-item">
-                    <strong>Density</strong>
-                    <span>Wine density (g/cm³)</span>
-					</div>
-                <div class="info-item">
-                    <strong>pH Level</strong>
-                    <span>Acidity/alkalinity scale</span>
-				</div>
-                <div class="info-item">
-                    <strong>Sulphates</strong>
-                    <span>Potassium sulphate (g/dm³)</span>
-					</div>
-                <div class="info-item">
-                    <strong>Alcohol</strong>
-                    <span>Alcohol content by volume (%)</span>
-				</div>
-				</div>
-		</div>
-	</div>
-
+    <!-- JavaScript for Form Enhancement -->
     <script>
-        document.getElementById('predictionForm').addEventListener('submit', function() {
-            document.querySelector('.submit-btn').style.display = 'none';
+        document.getElementById('predictionForm').addEventListener('submit', function(e) {
+            // Show loading animation
             document.getElementById('loading').style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('buttonText').textContent = 'Processing...';
         });
 
-        // Add input validation and formatting
-        document.querySelectorAll('input[type="number"]').forEach(input => {
+        // Add input validation feedback
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
             input.addEventListener('input', function() {
-                if (this.value < 0) {
-                    this.value = 0;
+                if (this.validity.valid) {
+                    this.style.borderColor = '#28a745';
+                } else {
+                    this.style.borderColor = '#dc3545';
                 }
             });
+        });
+
+        // Sample data button functionality
+        function fillSampleData() {
+            const sampleData = {
+                fixed_acidity: 7.4,
+                volatile_acidity: 0.7,
+                citric_acid: 0.0,
+                residual_sugar: 1.9,
+                chlorides: 0.076,
+                free_sulfur_dioxide: 11,
+                total_sulfur_dioxide: 34,
+                density: 0.9978,
+                pH: 3.51,
+                sulphates: 0.56,
+                alcohol: 9.4
+            };
+
+            Object.keys(sampleData).forEach(key => {
+                const input = document.getElementById(key);
+                if (input) {
+                    input.value = sampleData[key];
+                    input.style.borderColor = '#28a745';
+                }
+            });
+        }
+
+        // Add sample data button
+        document.addEventListener('DOMContentLoaded', function() {
+            const sampleBtn = document.createElement('button');
+            sampleBtn.type = 'button';
+            sampleBtn.className = 'back-btn';
+            sampleBtn.textContent = 'Fill Sample Data';
+            sampleBtn.onclick = fillSampleData;
+            sampleBtn.style.marginRight = '15px';
+            
+            document.querySelector('.submit-container').insertBefore(sampleBtn, document.getElementById('submitBtn'));
         });
     </script>
 </body>

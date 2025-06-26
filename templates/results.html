@@ -3,433 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wine Quality Prediction Results</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-
-        .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        .results-container {
-            padding: 40px;
-        }
-
-        .prediction-card {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 15px 35px rgba(240, 147, 251, 0.3);
-        }
-
-        .prediction-score {
-            font-size: 4rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .prediction-label {
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 15px;
-        }
-
-        .quality-description {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .quality-scale {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .quality-scale h3 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 1.3rem;
-        }
-
-        .scale-bar {
-            height: 40px;
-            background: linear-gradient(to right, #e74c3c, #f39c12, #f1c40f, #2ecc71, #27ae60);
-            border-radius: 20px;
-            position: relative;
-            margin: 20px 0;
-        }
-
-        .scale-indicator {
-            position: absolute;
-            top: -10px;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 60px;
-            background: #2c3e50;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .scale-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #7f8c8d;
-        }
-
-        .quality-ranges {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .range-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            border-left: 4px solid #3498db;
-        }
-
-        .range-score {
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 1.1rem;
-        }
-
-        .range-label {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-
-        .actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 30px;
-        }
-
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            min-width: 150px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.4);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
-            color: white;
-            box-shadow: 0 10px 20px rgba(149, 165, 166, 0.3);
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(149, 165, 166, 0.4);
-        }
-
-        .error-message {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .error-message h2 {
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-
-        .error-message p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .header p {
-                font-size: 1rem;
-            }
-
-            .results-container {
-                padding: 20px;
-            }
-
-            .prediction-card {
-                padding: 30px 20px;
-            }
-
-            .prediction-score {
-                font-size: 3rem;
-            }
-
-            .prediction-label {
-                font-size: 1.3rem;
-            }
-
-            .quality-scale {
-                padding: 20px;
-            }
-
-            .actions {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .btn {
-                width: 100%;
-                max-width: 300px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                padding: 30px 15px;
-            }
-
-            .header h1 {
-                font-size: 1.8rem;
-            }
-
-            .results-container {
-                padding: 15px;
-            }
-
-            .prediction-score {
-                font-size: 2.5rem;
-            }
-
-            .quality-ranges {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Animation */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .prediction-card {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .quality-scale {
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .actions {
-            animation: fadeInUp 1s ease-out;
-        }
-    </style>
+    <meta name="description" content="Wine Quality Prediction Results - Your wine quality score and analysis">
+    <title>Wine Quality Results</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍷</text></svg>">
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🍷 Prediction Results</h1>
-            <p>Your wine quality analysis is complete</p>
-        </div>
+        <!-- Header Section -->
+        <header class="header">
+            <h1>🍷 Wine Quality Analysis</h1>
+            <p>Machine Learning Prediction Results</p>
+        </header>
 
-        <div class="results-container">
-            {% if prediction and prediction != 'Error' %}
-                                 <div class="prediction-card">
-                     <div class="prediction-score" data-score="{{ prediction|float }}">{{ "%.1f"|format(prediction|float) }}</div>
-                     <div class="prediction-label">Quality Score</div>
-                     <div class="quality-description" id="qualityDescription">
-                         <!-- Will be populated by JavaScript -->
-                     </div>
-                 </div>
-
-                <div class="quality-scale">
-                    <h3>🎯 Wine Quality Scale</h3>
-                    <div class="scale-bar">
-                        <div class="scale-indicator" id="scaleIndicator"></div>
-                    </div>
-                    <div class="scale-labels">
-                        <span>Poor (3-4)</span>
-                        <span>Fair (5)</span>
-                        <span>Good (6)</span>
-                        <span>Very Good (7)</span>
-                        <span>Excellent (8-9)</span>
-                    </div>
-                    
-                    <div class="quality-ranges">
-                        <div class="range-item">
-                            <div class="range-score">3-4</div>
-                            <div class="range-label">Poor Quality</div>
-                        </div>
-                        <div class="range-item">
-                            <div class="range-score">5</div>
-                            <div class="range-label">Fair Quality</div>
-                        </div>
-                        <div class="range-item">
-                            <div class="range-score">6</div>
-                            <div class="range-label">Good Quality</div>
-                        </div>
-                        <div class="range-item">
-                            <div class="range-score">7</div>
-                            <div class="range-label">Very Good</div>
-                        </div>
-                        <div class="range-item">
-                            <div class="range-score">8-9</div>
-                            <div class="range-label">Excellent</div>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="error-message">
-                    <h2>⚠️ Prediction Error</h2>
-                    <p>{{ prediction if prediction else 'An error occurred while processing your request. Please check your input values and try again.' }}</p>
-                </div>
-            {% endif %}
-
-            <div class="actions">
-                <a href="/" class="btn btn-primary">🔄 Make Another Prediction</a>
-                <a href="/train" class="btn btn-secondary">🎯 Retrain Model</a>
+        <!-- Results Container -->
+        <main class="results-container">
+            <h2 class="results-title">Your Wine Quality Score</h2>
+            
+            <!-- Prediction Result Display -->
+            <div class="prediction-result" id="predictionScore">
+                {{ prediction }}
             </div>
-        </div>
+
+            <!-- Quality Interpretation -->
+            <div class="result-description">
+                <div id="qualityInterpretation">
+                    <!-- JavaScript will populate this -->
+                </div>
+                
+                <div class="quality-scale">
+                    <h3>Quality Scale Reference:</h3>
+                    <div class="scale-grid">
+                        <div class="scale-item poor">
+                            <span class="scale-number">3-4</span>
+                            <span class="scale-label">Poor</span>
+                        </div>
+                        <div class="scale-item fair">
+                            <span class="scale-number">5</span>
+                            <span class="scale-label">Fair</span>
+                        </div>
+                        <div class="scale-item good">
+                            <span class="scale-number">6</span>
+                            <span class="scale-label">Good</span>
+                        </div>
+                        <div class="scale-item very-good">
+                            <span class="scale-number">7</span>
+                            <span class="scale-label">Very Good</span>
+                        </div>
+                        <div class="scale-item excellent">
+                            <span class="scale-number">8-9</span>
+                            <span class="scale-label">Excellent</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wine-tips">
+                    <h3>Wine Quality Insights:</h3>
+                    <ul id="wineTips">
+                        <!-- JavaScript will populate tips based on score -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="/" class="back-btn">Predict Another Wine</a>
+                <button onclick="shareResults()" class="submit-btn share-btn">Share Results</button>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="additional-info">
+                <div class="info-card">
+                    <h4>🔬 Analysis Method</h4>
+                    <p>This prediction uses an ElasticNet regression model trained on wine chemical properties to estimate quality scores on a scale of 0-10.</p>
+                </div>
+                
+                <div class="info-card">
+                    <h4>📊 Model Performance</h4>
+                    <p>Our machine learning model achieves high accuracy by analyzing 11 key chemical properties of wine including acidity, sugar content, and alcohol percentage.</p>
+                </div>
+                
+                <div class="info-card">
+                    <h4>🍇 About Wine Quality</h4>
+                    <p>Wine quality is influenced by various factors including grape variety, fermentation process, aging, and chemical composition. This tool focuses on chemical analysis.</p>
+                </div>
+            </div>
+        </main>
     </div>
 
+    <!-- JavaScript for Enhanced Results Display -->
     <script>
-        // Set quality description and scale indicator position
-        function setQualityInfo(score) {
-            const descriptionElement = document.getElementById('qualityDescription');
-            const indicatorElement = document.getElementById('scaleIndicator');
-            
-            let description = '';
-            let position = 0;
-            
-            if (score >= 8) {
-                description = 'Excellent wine with outstanding characteristics and perfect balance.';
-                position = 90;
-            } else if (score >= 7) {
-                description = 'Very good wine with great flavor profile and minimal flaws.';
-                position = 75;
-            } else if (score >= 6) {
-                description = 'Good quality wine with pleasant taste and acceptable characteristics.';
-                position = 60;
-            } else if (score >= 5) {
-                description = 'Fair quality wine with some noticeable flaws but still drinkable.';
-                position = 40;
-            } else {
-                description = 'Poor quality wine with significant flaws affecting taste and aroma.';
-                position = 20;
-            }
-            
-            if (descriptionElement) {
-                descriptionElement.textContent = description;
-            }
-            
-            if (indicatorElement) {
-                indicatorElement.style.left = position + '%';
-            }
+        // Get the prediction value
+        const rawPrediction = document.getElementById('predictionScore').textContent.trim();
+        
+        // Check if it's an error message
+        if (rawPrediction.startsWith('Error:')) {
+            document.getElementById('predictionScore').innerHTML = '⚠️ Error';
+            document.getElementById('predictionScore').style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+            document.getElementById('qualityInterpretation').innerHTML = `
+                <h3 style="color: #dc3545;">Prediction Error</h3>
+                <p>${rawPrediction}</p>
+            `;
+            return; // Exit early for error cases
         }
         
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const scoreElement = document.querySelector('.prediction-score');
-            if (scoreElement && scoreElement.dataset.score) {
-                const predictionValue = parseFloat(scoreElement.dataset.score);
-                if (predictionValue > 0) {
-                    setQualityInfo(predictionValue);
-                }
+        const predictionValue = isNaN(parseFloat(rawPrediction)) ? 0 : parseFloat(rawPrediction);
+        
+        // Function to get quality interpretation
+        function getQualityInterpretation(score) {
+            if (score >= 8) {
+                return {
+                    category: "Excellent",
+                    description: "🌟 Outstanding wine quality! This wine exhibits exceptional characteristics and would be highly rated by wine experts.",
+                    color: "#28a745",
+                    emoji: "🍾"
+                };
+            } else if (score >= 7) {
+                return {
+                    category: "Very Good",
+                    description: "✨ Very good wine quality! This wine has great potential and would be well-received by wine enthusiasts.",
+                    color: "#17a2b8",
+                    emoji: "🥂"
+                };
+            } else if (score >= 6) {
+                return {
+                    category: "Good",
+                    description: "👍 Good wine quality! This wine meets quality standards and would be enjoyable for most wine drinkers.",
+                    color: "#007bff",
+                    emoji: "🍷"
+                };
+            } else if (score >= 5) {
+                return {
+                    category: "Fair",
+                    description: "⚖️ Fair wine quality. This wine has acceptable characteristics but may have some minor flaws.",
+                    color: "#ffc107",
+                    emoji: "🍇"
+                };
+            } else {
+                return {
+                    category: "Needs Improvement",
+                    description: "🔧 This wine may need some adjustments to improve its quality characteristics.",
+                    color: "#dc3545",
+                    emoji: "⚠️"
+                };
+            }
+        }
+
+        // Function to get wine tips based on score
+        function getWineTips(score) {
+            const tips = [];
+            
+            if (score >= 7) {
+                tips.push("This wine would pair well with fine dining experiences");
+                tips.push("Consider aging this wine to enhance its complexity");
+                tips.push("Perfect for special occasions and celebrations");
+            } else if (score >= 6) {
+                tips.push("Great for casual dining and social gatherings");
+                tips.push("Pairs well with a variety of foods");
+                tips.push("Good value for everyday consumption");
+            } else if (score >= 5) {
+                tips.push("Best served chilled or at proper temperature");
+                tips.push("Consider blending with other wines");
+                tips.push("Good for cooking and culinary applications");
+            } else {
+                tips.push("May benefit from additional fermentation time");
+                tips.push("Check acidity and sugar balance");
+                tips.push("Consider adjusting chemical composition");
             }
             
-            // Add interactive effects
-            document.querySelectorAll('.btn').forEach(btn => {
-                btn.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-3px) scale(1.05)';
-                });
-                
-                btn.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0) scale(1)';
-                });
+            return tips;
+        }
+
+        // Function to highlight current quality on scale
+        function highlightQualityScale(score) {
+            const scaleItems = document.querySelectorAll('.scale-item');
+            scaleItems.forEach(item => {
+                item.classList.remove('active');
             });
+
+            if (score >= 8) {
+                document.querySelector('.scale-item.excellent').classList.add('active');
+            } else if (score >= 7) {
+                document.querySelector('.scale-item.very-good').classList.add('active');
+            } else if (score >= 6) {
+                document.querySelector('.scale-item.good').classList.add('active');
+            } else if (score >= 5) {
+                document.querySelector('.scale-item.fair').classList.add('active');
+            } else {
+                document.querySelector('.scale-item.poor').classList.add('active');
+            }
+        }
+
+        // Function to share results
+        function shareResults() {
+            const interpretation = getQualityInterpretation(predictionValue);
+            const shareText = `🍷 My wine quality prediction: ${predictionValue.toFixed(1)}/10 (${interpretation.category}) ${interpretation.emoji}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Wine Quality Prediction',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Results copied to clipboard!');
+                });
+            }
+        }
+
+        // Initialize the results display
+        document.addEventListener('DOMContentLoaded', function() {
+            const interpretation = getQualityInterpretation(predictionValue);
+            const tips = getWineTips(predictionValue);
+
+            // Update prediction result styling
+            const predictionElement = document.getElementById('predictionScore');
+            predictionElement.style.background = `linear-gradient(135deg, ${interpretation.color} 0%, ${interpretation.color}dd 100%)`;
+            predictionElement.innerHTML = `${interpretation.emoji} ${predictionValue.toFixed(1)}<small>/10</small>`;
+
+            // Update quality interpretation
+            document.getElementById('qualityInterpretation').innerHTML = `
+                <h3 style="color: ${interpretation.color};">${interpretation.category}</h3>
+                <p>${interpretation.description}</p>
+            `;
+
+            // Update wine tips
+            const tipsContainer = document.getElementById('wineTips');
+            tips.forEach(tip => {
+                const li = document.createElement('li');
+                li.textContent = tip;
+                tipsContainer.appendChild(li);
+            });
+
+            // Highlight quality scale
+            highlightQualityScale(predictionValue);
+
+            // Add animation
+            predictionElement.style.animation = 'pulse 2s ease-in-out';
         });
+
+        // Add pulse animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

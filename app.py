@@ -39,9 +39,14 @@ def index():
             data=np.array(data).reshape(1,11)
             prediction_pipeline=PredictionPipeline()
             prediction=prediction_pipeline.predict(data)
-            return render_template('results.html',prediction=str(prediction))
+            
+            # Extract the actual number from the prediction array
+            prediction_value = float(prediction[0]) if len(prediction) > 0 else 0.0
+            
+            return render_template('results.html',prediction=round(prediction_value, 2))
         except Exception as e:
-            return render_template('results.html',prediction=e)
+            print(f"Prediction error: {e}")  # Log the actual error
+            return render_template('results.html',prediction="Error: Unable to make prediction. Please check your input values.")
     else:
         return render_template('index.html')
     
