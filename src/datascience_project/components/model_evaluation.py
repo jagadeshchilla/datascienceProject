@@ -14,7 +14,7 @@ import logging
 import os
 # os.environ["MLFLOW_TRACKING_URI"]="https://dagshub.com/jagadeshchilla/datascienceProject.mlflow"
 # os.environ["MLFLOW_TRACKING_USERNAME"]="jagadeshchilla"
-# os.environ["MLFLOW_TRACKING_PASSWORD"]="7212e5a96e00f4974cee0cbb72f1a232a57faf50"
+# os.environ["MLFLOW_TRACKING_PASSWORD"]="your_dagshub_token_here"
 
 class SklearnModelWrapper(mlflow.pyfunc.PythonModel):
     """
