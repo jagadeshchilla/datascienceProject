@@ -107,18 +107,17 @@ class ModelEvaluation:
             except Exception as e:
                 logging.error(f"Failed to log model using pyfunc: {str(e)}")
                 
-                # Fallback: Just log model artifacts manually
+                # Fallback: Just log model artifacts manually using joblib
                 try:
-                    import pickle
                     import tempfile
                     
-                    # Save model as pickle file and log as artifact
-                    with tempfile.NamedTemporaryFile(suffix='.pkl', delete=False) as f:
-                        pickle.dump(model, f)
+                    # Save model as joblib file and log as artifact
+                    with tempfile.NamedTemporaryFile(suffix='.joblib', delete=False) as f:
+                        joblib.dump(model, f.name)
                         model_path = f.name
                     
                     mlflow.log_artifact(model_path, "model")
-                    logging.info("Model saved as artifact (fallback method)")
+                    logging.info("Model saved as joblib artifact (fallback method)")
                     
                     # Clean up temporary file
                     os.unlink(model_path)
